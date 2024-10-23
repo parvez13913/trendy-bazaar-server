@@ -1,0 +1,11 @@
+{
+  "name": "trendy-bazar-server",
+  "version": "1.0.0",
+  "description": "This is an e-commerce platform whose name is trendy-bazaar. which use next.js and shadcn UI library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Parvez Rahman",
+  "license": "ISC"
+}
