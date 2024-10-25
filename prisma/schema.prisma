@@ -18,15 +18,22 @@ enum UserRole {
   customer
 }
 
-model Users {
+model User {
   id           String   @id @default(uuid())
-  name         String
+  firstName    String
+  middleName   String?
+  lastName     String
+  gender       String
+  bloodGroup   String?
+  dateOfbirth  String?
   email        String   @unique
   password     String
   role         UserRole
   contactNo    String
   address      String
-  profileImage String
+  profileImage String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@map("users")
 }
