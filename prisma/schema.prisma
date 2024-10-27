@@ -8,26 +8,71 @@ datasource db {
 }
 
 enum UserRole {
-  admin
-  customer
+  ADMIN
+  CUSTOMER
+  USER
 }
 
 model User {
-  id           String   @id @default(uuid())
+  id           Int       @id @default(autoincrement())
   firstName    String
   middleName   String?
   lastName     String
   gender       String
   bloodGroup   String?
-  dateOfbirth  String?
-  email        String   @unique
+  dateBirth    String?
+  email        String    @unique
   password     String
-  role         UserRole
+  role         UserRole  @default(USER)
+  contactNo    String
+  address      String
+  profileImage String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  customers    Customer?
+  admins       Admin?
+
+  @@map("users")
+}
+
+model Customer {
+  id           Int      @id @default(autoincrement())
+  firstName    String
+  middleName   String?
+  lastName     String
+  gender       String
+  bloodGroup   String?
+  dateBirth    String?
+  email        String   @unique
+  role         UserRole @default(CUSTOMER)
   contactNo    String
   address      String
   profileImage String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  userId       Int      @unique
+  users        User     @relation(fields: [userId], references: [id])
 
-  @@map("users")
+  @@map("customers")
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  firstName    String
+  middleName   String?
+  lastName     String
+  gender       String
+  bloodGroup   String?
+  dateBirth    String?
+  email        String   @unique
+  role         UserRole @default(ADMIN)
+  contactNo    String
+  address      String
+  profileImage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       Int      @unique
+  users        User     @relation(fields: [userId], references: [id])
+
+  @@map("admins")
 }
