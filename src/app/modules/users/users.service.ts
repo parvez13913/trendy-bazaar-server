@@ -1,6 +1,8 @@
 import { Prisma, User, UserRole } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { StatusCodes } from "http-status-codes";
 import config from "../../../config";
+import ApiError from "../../../errors/api-error";
 import { paginationHelpers } from "../../../helpers/paginationHelpers";
 import { IGenericResponse } from "../../../interface/common";
 import { IPaginationOptions } from "../../../interface/pagination";
@@ -116,7 +118,20 @@ const getAllUsers = async (
   };
 };
 
+const getSingleUser = async (email: string): Promise<User | null> => {
+  const result = await prisma.user.findFirst({
+    where: { email },
+  });
+
+  if (!result) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
+  return result;
+};
+
 export const UsersService = {
   createUser,
   getAllUsers,
+  getSingleUser,
 };
