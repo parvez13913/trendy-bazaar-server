@@ -130,8 +130,26 @@ const getSingleUser = async (email: string): Promise<User | null> => {
   return result;
 };
 
+const updateUser = async (
+  email: string,
+  payload: Partial<User>
+): Promise<User | null> => {
+  const isUserExist = await prisma.user.findFirst({ where: { email } });
+  if (!isUserExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
+  const result = await prisma.user.update({
+    where: { email },
+    data: payload,
+  });
+
+  return result;
+};
+
 export const UsersService = {
   createUser,
   getAllUsers,
   getSingleUser,
+  updateUser,
 };

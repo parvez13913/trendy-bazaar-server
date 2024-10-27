@@ -9,4 +9,6 @@ router.get("/:id", UsersController.getSingleUser);
 
 router.post("/create-user", UsersController.createUser);
 
+router.patch("/:email", UsersController.updateUser);
+
 export const UserRoutes = router;
