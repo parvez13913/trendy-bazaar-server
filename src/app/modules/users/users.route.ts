@@ -11,4 +11,6 @@ router.post("/create-user", UsersController.createUser);
 
 router.patch("/:email", UsersController.updateUser);
 
+router.delete("/:email", UsersController.deleteUser);
+
 export const UserRoutes = router;

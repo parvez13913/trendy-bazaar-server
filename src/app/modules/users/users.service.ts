@@ -147,9 +147,22 @@ const updateUser = async (
   return result;
 };
 
+const deleteUser = async (email: string): Promise<User | null> => {
+  const isUserExist = await prisma.user.findFirst({ where: { email } });
+
+  if (!isUserExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
+  const result = await prisma.user.delete({ where: { email } });
+
+  return result;
+};
+
 export const UsersService = {
   createUser,
   getAllUsers,
   getSingleUser,
   updateUser,
+  deleteUser,
 };
