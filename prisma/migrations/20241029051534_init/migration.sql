@@ -9,7 +9,7 @@ CREATE TABLE "users" (
     "lastName" TEXT NOT NULL,
     "gender" TEXT NOT NULL,
     "bloodGroup" TEXT,
-    "dateOfbirth" TEXT,
+    "dateBirth" TEXT,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
@@ -30,7 +30,7 @@ CREATE TABLE "customers" (
     "lastName" TEXT NOT NULL,
     "gender" TEXT NOT NULL,
     "bloodGroup" TEXT,
-    "dateOfbirth" TEXT,
+    "dateBirth" TEXT,
     "email" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
     "contactNo" TEXT NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE "admins" (
     "lastName" TEXT NOT NULL,
     "gender" TEXT NOT NULL,
     "bloodGroup" TEXT,
-    "dateOfbirth" TEXT,
+    "dateBirth" TEXT,
     "email" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'ADMIN',
     "contactNo" TEXT NOT NULL,
@@ -80,7 +80,7 @@ CREATE UNIQUE INDEX "admins_email_key" ON "admins"("email");
 CREATE UNIQUE INDEX "admins_userId_key" ON "admins"("userId");
 
 -- AddForeignKey
-ALTER TABLE "customers" ADD CONSTRAINT "customers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "customers" ADD CONSTRAINT "customers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "admins" ADD CONSTRAINT "admins_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "admins" ADD CONSTRAINT "admins_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import config from "../../../config";
 import ApiError from "../../../errors/api-error";
-import { paginationHelpers } from "../../../helpers/paginationHelpers";
+import { paginationHelpers } from "../../../helpers/pagination-helpers";
 import { IGenericResponse } from "../../../interface/common";
 import { IPaginationOptions } from "../../../interface/pagination";
 import { prisma } from "../../../shard/prisma";
