@@ -58,7 +58,7 @@ const createUser = async (data: User): Promise<User | null> => {
     });
   }
 
-  return user;
+  return null;
 };
 
 const getAllUsers = async (
