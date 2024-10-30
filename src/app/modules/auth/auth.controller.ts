@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import config from "../../../config";
 import { catchAsync } from "../../../shard/catchAsync";
 import sendResponse from "../../../shard/sendResponse";
+import { IRefreshTokenResponse } from "./auth.interface";
 import { AuthService } from "./auth.service";
 
 const login = catchAsync(async (req: Request, res: Response) => {
@@ -25,6 +26,25 @@ const login = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.cookies;
+
+  const result = await AuthService.refreshToken(refreshToken);
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  sendResponse<IRefreshTokenResponse>(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User Loggedin successfully",
+    data: result,
+  });
+});
+
 export const AuthController = {
   login,
+  refreshToken,
 };

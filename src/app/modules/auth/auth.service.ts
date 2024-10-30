@@ -40,6 +40,38 @@ const login = async (payload: ILoginUser) => {
   };
 };
 
+const refreshToken = async (token: string) => {
+  let verifyToken = null;
+  try {
+    verifyToken = JwtHelpers.verifiedToken(
+      token,
+      config.jwt.refresh_secret as Secret
+    );
+    const { userEmail } = verifyToken;
+    const isUserExist = await prisma.user.findFirst({
+      where: { email: userEmail },
+    });
+
+    if (!isUserExist) {
+      throw new ApiError(StatusCodes.NOT_FOUND, "User does not exist");
+    }
+
+    const { email, role } = isUserExist;
+
+    const newAccessToken = JwtHelpers.createToken(
+      { email, role },
+      config.jwt.secret as Secret,
+      config.jwt.expires_in as string
+    );
+    return {
+      accessToken: newAccessToken,
+    };
+  } catch (error) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "Invalid Refresh Token");
+  }
+};
+
 export const AuthService = {
   login,
+  refreshToken,
 };

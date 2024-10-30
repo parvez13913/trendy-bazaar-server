@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
@@ -5,6 +6,7 @@ import router from "./app/routers";
 const app: Application = express();
 
 app.use(cors());
+app.use(cookieParser());
 
 // parser
 app.use(express.json());
