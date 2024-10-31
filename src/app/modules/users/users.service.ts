@@ -1,7 +1,5 @@
-import { Prisma, User, UserRole } from "@prisma/client";
-import bcrypt from "bcrypt";
+import { Prisma, User } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
-import config from "../../../config";
 import ApiError from "../../../errors/api-error";
 import { paginationHelpers } from "../../../helpers/pagination-helpers";
 import { IGenericResponse } from "../../../interface/common";
@@ -9,57 +7,6 @@ import { IPaginationOptions } from "../../../interface/pagination";
 import { prisma } from "../../../shard/prisma";
 import { userFilterableFields } from "./user.constant";
 import { IUserFilters } from "./user.interface";
-
-const createUser = async (data: User): Promise<User | null> => {
-  const hashedPassword = await bcrypt.hash(
-    data?.password,
-    Number(config.bcrypt_salt_round)
-  );
-  const user = await prisma.user.create({
-    data: {
-      ...data,
-      password: hashedPassword,
-    },
-  });
-
-  if (data.role === UserRole.CUSTOMER) {
-    await prisma.customer.create({
-      data: {
-        firstName: data.firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        email: data.email,
-        profileImage: data.profileImage,
-        userId: user.id,
-        gender: data.gender,
-        contactNo: data.contactNo,
-        address: data.address,
-        role: data.role,
-        bloodGroup: data.bloodGroup,
-        dateBirth: data.dateBirth,
-      },
-    });
-  } else if (data.role === UserRole.ADMIN) {
-    await prisma.admin.create({
-      data: {
-        firstName: data.firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        email: data.email,
-        profileImage: data.profileImage,
-        userId: user.id,
-        gender: data.gender,
-        contactNo: data.contactNo,
-        address: data.address,
-        role: data.role,
-        bloodGroup: data.bloodGroup,
-        dateBirth: data.dateBirth,
-      },
-    });
-  }
-
-  return null;
-};
 
 const getAllUsers = async (
   filters: IUserFilters,
@@ -160,7 +107,6 @@ const deleteUser = async (email: string): Promise<User | null> => {
 };
 
 export const UsersService = {
-  createUser,
   getAllUsers,
   getSingleUser,
   updateUser,

@@ -1,3 +1,4 @@
+import { User, UserRole } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { Secret } from "jsonwebtoken";
@@ -6,6 +7,68 @@ import ApiError from "../../../errors/api-error";
 import { JwtHelpers } from "../../../helpers/jwt-helpers";
 import { prisma } from "../../../shard/prisma";
 import { ILoginUser } from "./auth.interface";
+
+const register = async (data: User): Promise<User | null> => {
+  const { email } = data;
+
+  const isUserExist = await prisma.user.findFirst({ where: { email } });
+
+  if (!isUserExist) {
+    throw new ApiError(
+      StatusCodes.CONFLICT,
+      "There is already a user by this email."
+    );
+  }
+
+  const hashedPassword = await bcrypt.hash(
+    data?.password,
+    Number(config.bcrypt_salt_round)
+  );
+  const user = await prisma.user.create({
+    data: {
+      ...data,
+      password: hashedPassword,
+    },
+  });
+
+  if (data.role === UserRole.CUSTOMER) {
+    await prisma.customer.create({
+      data: {
+        firstName: data.firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        email: data.email,
+        profileImage: data.profileImage,
+        userId: user.id,
+        gender: data.gender,
+        contactNo: data.contactNo,
+        address: data.address,
+        role: data.role,
+        bloodGroup: data.bloodGroup,
+        dateBirth: data.dateBirth,
+      },
+    });
+  } else if (data.role === UserRole.ADMIN) {
+    await prisma.admin.create({
+      data: {
+        firstName: data.firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        email: data.email,
+        profileImage: data.profileImage,
+        userId: user.id,
+        gender: data.gender,
+        contactNo: data.contactNo,
+        address: data.address,
+        role: data.role,
+        bloodGroup: data.bloodGroup,
+        dateBirth: data.dateBirth,
+      },
+    });
+  }
+
+  return null;
+};
 
 const login = async (payload: ILoginUser) => {
   const { email, password } = payload;
@@ -72,6 +135,7 @@ const refreshToken = async (token: string) => {
 };
 
 export const AuthService = {
+  register,
   login,
   refreshToken,
 };

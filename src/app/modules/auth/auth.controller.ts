@@ -6,6 +6,18 @@ import sendResponse from "../../../shard/sendResponse";
 import { IRefreshTokenResponse } from "./auth.interface";
 import { AuthService } from "./auth.service";
 
+const register = catchAsync(async (req: Request, res: Response) => {
+  const { ...data } = req.body;
+  const result = await AuthService.register(data);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User Created Successfully!",
+    data: result,
+  });
+});
+
 const login = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body;
   const result = await AuthService.login(loginData);
@@ -45,6 +57,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const AuthController = {
+  register,
   login,
   refreshToken,
 };

@@ -9,18 +9,6 @@ import sendResponse from "../../../shard/sendResponse";
 import { userFilterableFields } from "./user.constant";
 import { UsersService } from "./users.service";
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-  const { ...data } = req.body;
-  const result = await UsersService.createUser(data);
-
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "User Created Successfully!",
-    data: result,
-  });
-});
-
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, userFilterableFields);
   const options = pick(req.query, paginationFields);
@@ -74,7 +62,6 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const UsersController = {
-  createUser,
   getAllUsers,
   getSingleUser,
   updateUser,
