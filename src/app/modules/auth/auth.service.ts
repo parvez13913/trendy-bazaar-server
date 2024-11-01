@@ -8,7 +8,9 @@ import { JwtHelpers } from "../../../helpers/jwt-helpers";
 import { prisma } from "../../../shard/prisma";
 import { ILoginUser } from "./auth.interface";
 
-const register = async (data: User): Promise<User | null> => {
+const register = async (
+  data: User
+): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
   const { email } = data;
 
   const isUserExist = await prisma.user.findFirst({ where: { email } });
@@ -67,7 +69,21 @@ const register = async (data: User): Promise<User | null> => {
     });
   }
 
-  return null;
+  const { email: userEmail, role } = isUserExist;
+
+  const accessToken = JwtHelpers.createToken(
+    { userEmail, role },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  const refreshToken = JwtHelpers.createToken(
+    { userEmail, role },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string
+  );
+
+  return { user, accessToken, refreshToken };
 };
 
 const login = async (payload: ILoginUser) => {
@@ -85,7 +101,7 @@ const login = async (payload: ILoginUser) => {
   }
 
   const { email: userEmail, role } = isUserExist;
-  const token = JwtHelpers.createToken(
+  const accessToken = JwtHelpers.createToken(
     { userEmail, role },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
@@ -98,7 +114,7 @@ const login = async (payload: ILoginUser) => {
   );
 
   return {
-    token,
+    accessToken,
     refreshToken,
   };
 };

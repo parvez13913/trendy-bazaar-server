@@ -26,7 +26,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
     httpOnly: true,
   };
 
-  const { refreshToken, token } = result;
+  const { refreshToken, accessToken } = result;
 
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
@@ -34,7 +34,7 @@ const login = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: "User login successfully!",
-    token: token,
+    token: accessToken,
   });
 });
 
