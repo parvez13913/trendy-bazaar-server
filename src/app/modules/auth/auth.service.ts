@@ -10,7 +10,7 @@ import { ILoginUser } from "./auth.interface";
 
 const register = async (
   data: User
-): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
+): Promise<{ accessToken: string; refreshToken: string }> => {
   const isUserExist = await prisma.user.findFirst({
     where: {
       email: data?.email,
@@ -89,7 +89,7 @@ const register = async (
     config.jwt.refresh_expires_in as string
   );
 
-  return { user, accessToken, refreshToken };
+  return { accessToken, refreshToken };
 };
 
 const login = async (payload: ILoginUser) => {
