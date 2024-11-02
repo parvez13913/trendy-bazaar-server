@@ -11,11 +11,13 @@ import { ILoginUser } from "./auth.interface";
 const register = async (
   data: User
 ): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
-  const { email } = data;
+  const isUserExist = await prisma.user.findFirst({
+    where: {
+      email: data?.email,
+    },
+  });
 
-  const isUserExist = await prisma.user.findFirst({ where: { email } });
-
-  if (!isUserExist) {
+  if (isUserExist) {
     throw new ApiError(
       StatusCodes.CONFLICT,
       "There is already a user by this email."
@@ -32,6 +34,10 @@ const register = async (
       password: hashedPassword,
     },
   });
+
+  if (!user) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Failed to register.");
+  }
 
   if (data.role === UserRole.CUSTOMER) {
     await prisma.customer.create({
@@ -69,7 +75,7 @@ const register = async (
     });
   }
 
-  const { email: userEmail, role } = isUserExist;
+  const { email: userEmail, role } = user;
 
   const accessToken = JwtHelpers.createToken(
     { userEmail, role },
