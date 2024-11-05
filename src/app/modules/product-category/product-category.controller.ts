@@ -17,6 +17,22 @@ const createProductCategory = catchAsync(
   }
 );
 
+const getSingleProductCategory = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await ProductCategoryService.getSingleProductCategory(
+      Number(req.params.id)
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Product category created",
+      data: result,
+    });
+  }
+);
+
 export const ProductCategoryController = {
   createProductCategory,
+  getSingleProductCategory,
 };

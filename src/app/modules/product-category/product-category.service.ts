@@ -29,6 +29,23 @@ const createProductCategory = async (
   return result;
 };
 
+const getSingleProductCategory = async (
+  id: number
+): Promise<ProductCategory> => {
+  const result = await prisma.productCategory.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!result) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Product category not found");
+  }
+
+  return result;
+};
+
 export const ProductCategoryService = {
   createProductCategory,
+  getSingleProductCategory,
 };
