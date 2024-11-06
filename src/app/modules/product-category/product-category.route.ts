@@ -10,4 +10,6 @@ router.post(
   ProductCategoryController.createProductCategory
 );
 
+router.delete("/", ProductCategoryController.deleteProductCategory);
+
 export const ProductCategoryRoutes = router;

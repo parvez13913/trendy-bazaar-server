@@ -45,7 +45,26 @@ const getSingleProductCategory = async (
   return result;
 };
 
+const deleteProductCategory = async (id: number) => {
+  const isExistProductCategory = await prisma.productCategory.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExistProductCategory) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Product category not found");
+  }
+
+  const result = await prisma.productCategory.delete({
+    where: {
+      id,
+    },
+  });
+};
+
 export const ProductCategoryService = {
   createProductCategory,
   getSingleProductCategory,
+  deleteProductCategory,
 };
