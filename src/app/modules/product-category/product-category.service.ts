@@ -45,6 +45,30 @@ const getSingleProductCategory = async (
   return result;
 };
 
+const updateProductCategory = async (
+  id: number,
+  payload: Partial<ProductCategory>
+) => {
+  const isExistProductCategory = await prisma.productCategory.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExistProductCategory) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Product category not found");
+  }
+
+  const result = await prisma.productCategory.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+
+  return result;
+};
+
 const deleteProductCategory = async (id: number) => {
   const isExistProductCategory = await prisma.productCategory.findFirst({
     where: {
@@ -66,5 +90,6 @@ const deleteProductCategory = async (id: number) => {
 export const ProductCategoryService = {
   createProductCategory,
   getSingleProductCategory,
+  updateProductCategory,
   deleteProductCategory,
 };

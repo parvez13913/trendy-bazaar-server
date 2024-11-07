@@ -32,6 +32,22 @@ const getSingleProductCategory = catchAsync(
   }
 );
 
+const updateProductCategory = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await ProductCategoryService.updateProductCategory(
+      Number(req.params.id),
+      req.body
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Product category updated",
+      data: result,
+    });
+  }
+);
+
 const deleteProductCategory = catchAsync(
   async (req: Request, res: Response) => {
     const result = await ProductCategoryService.deleteProductCategory(
@@ -50,5 +66,6 @@ const deleteProductCategory = catchAsync(
 export const ProductCategoryController = {
   createProductCategory,
   getSingleProductCategory,
+  updateProductCategory,
   deleteProductCategory,
 };
