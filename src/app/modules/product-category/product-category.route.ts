@@ -3,15 +3,15 @@ import { ProductCategoryController } from "./product-category.controller";
 
 const router = express.Router();
 
-router.get("/", ProductCategoryController.getSingleProductCategory);
+router.get("/:id", ProductCategoryController.getSingleProductCategory);
 
 router.post(
   "/create-product-category",
   ProductCategoryController.createProductCategory
 );
 
-router.patch("/", ProductCategoryController.updateProductCategory);
+router.patch("/:id", ProductCategoryController.updateProductCategory);
 
-router.delete("/", ProductCategoryController.deleteProductCategory);
+router.delete("/:id", ProductCategoryController.deleteProductCategory);
 
 export const ProductCategoryRoutes = router;
