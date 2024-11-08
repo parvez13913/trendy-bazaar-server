@@ -78,8 +78,22 @@ model Admin {
 }
 
 model ProductCategory {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   Int                  @id @default(autoincrement())
+  name                 String               @unique
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  subProductCategories SubProductCategory[]
+
+  @@map("productCategories")
+}
+
+model SubProductCategory {
+  id                Int             @id @default(autoincrement())
+  name              String
+  productCategoryId Int
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@map("subProductCategories")
 }
