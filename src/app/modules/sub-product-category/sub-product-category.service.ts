@@ -7,7 +7,7 @@ const createSubProductCategory = async (
   payload: SubProductCategory
 ): Promise<SubProductCategory> => {
   const { name } = payload;
-  const isExistSubProductCategory = await prisma.subProductCategory.findFirst({
+  const isExistSubProductCategory = await prisma.subProductCategory.findUnique({
     where: {
       name,
     },

@@ -66,7 +66,7 @@ const getAllUsers = async (
 };
 
 const getSingleUser = async (email: string): Promise<User | null> => {
-  const result = await prisma.user.findFirst({
+  const result = await prisma.user.findUnique({
     where: { email },
   });
 
@@ -81,7 +81,7 @@ const updateUser = async (
   email: string,
   payload: Partial<User>
 ): Promise<User | null> => {
-  const isUserExist = await prisma.user.findFirst({ where: { email } });
+  const isUserExist = await prisma.user.findUnique({ where: { email } });
   if (!isUserExist) {
     throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
   }
@@ -95,7 +95,7 @@ const updateUser = async (
 };
 
 const deleteUser = async (email: string): Promise<User | null> => {
-  const isUserExist = await prisma.user.findFirst({ where: { email } });
+  const isUserExist = await prisma.user.findUnique({ where: { email } });
 
   if (!isUserExist) {
     throw new ApiError(StatusCodes.NOT_FOUND, "User not found");

@@ -7,7 +7,7 @@ const createProductCategory = async (
   payload: ProductCategory
 ): Promise<ProductCategory> => {
   const { name } = payload;
-  const isExistProductCategory = await prisma.productCategory.findFirst({
+  const isExistProductCategory = await prisma.productCategory.findUnique({
     where: {
       name,
     },
@@ -32,7 +32,7 @@ const createProductCategory = async (
 const getSingleProductCategory = async (
   id: number
 ): Promise<ProductCategory> => {
-  const result = await prisma.productCategory.findFirst({
+  const result = await prisma.productCategory.findUnique({
     where: {
       id,
     },
@@ -49,7 +49,7 @@ const updateProductCategory = async (
   id: number,
   payload: Partial<ProductCategory>
 ) => {
-  const isExistProductCategory = await prisma.productCategory.findFirst({
+  const isExistProductCategory = await prisma.productCategory.findUnique({
     where: {
       id,
     },
@@ -70,7 +70,7 @@ const updateProductCategory = async (
 };
 
 const deleteProductCategory = async (id: number) => {
-  const isExistProductCategory = await prisma.productCategory.findFirst({
+  const isExistProductCategory = await prisma.productCategory.findUnique({
     where: {
       id,
     },
