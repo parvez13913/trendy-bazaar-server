@@ -33,10 +33,39 @@ const getSingleSubProductCategory = async (
     },
   });
 
+  if (!result) {
+    throw new ApiError(StatusCodes.OK, "Sub product category not found");
+  }
+
+  return result;
+};
+
+const updateSubProductCategory = async (
+  id: number,
+  payload: Partial<SubProductCategory>
+) => {
+  const isExistSubProductCategory = await prisma.subProductCategory.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExistSubProductCategory) {
+    throw new ApiError(StatusCodes.OK, "Sub product category not found");
+  }
+
+  const result = await prisma.subProductCategory.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+
   return result;
 };
 
 export const SubProductCategoryService = {
   createSubProductCategory,
   getSingleSubProductCategory,
+  updateSubProductCategory,
 };
