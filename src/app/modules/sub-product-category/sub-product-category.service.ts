@@ -24,6 +24,19 @@ const createSubProductCategory = async (
   return result;
 };
 
+const getSingleSubProductCategory = async (
+  id: number
+): Promise<SubProductCategory | null> => {
+  const result = await prisma.subProductCategory.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return result;
+};
+
 export const SubProductCategoryService = {
   createSubProductCategory,
+  getSingleSubProductCategory,
 };

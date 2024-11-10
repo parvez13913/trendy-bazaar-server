@@ -19,6 +19,22 @@ const createSubProductCategory = catchAsync(
   }
 );
 
+const getSingleSubProductCategory = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await SubProductCategoryService.getSingleSubProductCategory(
+      Number(req.params.id)
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Sub product category fetched successfully!!",
+      data: result,
+    });
+  }
+);
+
 export const SubProductCategoryController = {
   createSubProductCategory,
+  getSingleSubProductCategory,
 };
