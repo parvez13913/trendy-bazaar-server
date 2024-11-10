@@ -50,8 +50,24 @@ const updateSubProductCategory = catchAsync(
   }
 );
 
+const deleteSubProductCategory = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await SubProductCategoryService.deleteSubProductCategory(
+      Number(req.params.id)
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Sub product category deleted successfully!!",
+      data: result,
+    });
+  }
+);
+
 export const SubProductCategoryController = {
   createSubProductCategory,
   getSingleSubProductCategory,
   updateSubProductCategory,
+  deleteSubProductCategory,
 };

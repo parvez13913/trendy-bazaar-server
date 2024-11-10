@@ -64,8 +64,29 @@ const updateSubProductCategory = async (
   return result;
 };
 
+const deleteSubProductCategory = async (id: number) => {
+  const isExistSubProductCategory = await prisma.subProductCategory.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExistSubProductCategory) {
+    throw new ApiError(StatusCodes.OK, "Sub product category not found");
+  }
+
+  const result = await prisma.subProductCategory.delete({
+    where: {
+      id,
+    },
+  });
+
+  return result;
+};
+
 export const SubProductCategoryService = {
   createSubProductCategory,
   getSingleSubProductCategory,
   updateSubProductCategory,
+  deleteSubProductCategory,
 };

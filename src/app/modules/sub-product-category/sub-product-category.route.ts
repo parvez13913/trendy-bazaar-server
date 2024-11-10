@@ -12,4 +12,6 @@ router.post(
 
 router.patch("/:id", SubProductCategoryController.updateSubProductCategory);
 
+router.delete("/:id", SubProductCategoryController.deleteSubProductCategory);
+
 export const SubProductCategoryRoutes = router;
