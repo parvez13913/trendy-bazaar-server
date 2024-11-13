@@ -1,14 +1,12 @@
-import { Image } from "@prisma/client";
-import { prisma } from "../../../shard/prisma";
+import { Request } from "express";
+import { FileUploadHelper } from "../../../helpers/file-uploadHelper ";
+import { IUploadFile } from "../../../interface/file";
 
-const createImage = async (payload: Image): Promise<Image | null> => {
-  const result = await prisma.image.create({
-    data: {
-      ...payload,
-    },
-  });
+const createImage = async (req: Request) => {
+  const file = req.file as IUploadFile;
+  const uploadedImage = await FileUploadHelper.uploadToCloudinary(file);
 
-  return result;
+  return uploadedImage?.url;
 };
 
 export const ImageService = {
