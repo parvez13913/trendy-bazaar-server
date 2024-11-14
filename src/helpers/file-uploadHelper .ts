@@ -39,7 +39,21 @@ const uploadToCloudinary = async (
   });
 };
 
+// Helper to upload multiple files to Cloudinary
+const uploadMultipleToCloudinary = async (
+  files: IUploadFile[]
+): Promise<ICloudinaryResponse[]> => {
+  const uploadPromises = files.map((file) => uploadToCloudinary(file));
+  const results = await Promise.all(uploadPromises);
+
+  // Filter out any null results
+  return results.filter(
+    (result): result is ICloudinaryResponse => result !== null
+  );
+};
+
 export const FileUploadHelper = {
   upload,
   uploadToCloudinary,
+  uploadMultipleToCloudinary,
 };

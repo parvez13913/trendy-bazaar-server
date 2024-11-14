@@ -12,4 +12,12 @@ router.post(
   }
 );
 
+router.post(
+  "/multiple",
+  FileUploadHelper.upload.array("files", 10),
+  (req: Request, res: Response, next: NextFunction) => {
+    return ImageController.createManyImage(req, res, next);
+  }
+);
+
 export const ImageRoutes = router;

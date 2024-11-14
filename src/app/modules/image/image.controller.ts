@@ -16,7 +16,20 @@ const createImage = catchAsync(
     });
   }
 );
+const createManyImage = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await ImageService.createManyImage(req);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Images inserted into db.",
+      data: result,
+    });
+  }
+);
 
 export const ImageController = {
   createImage,
+  createManyImage,
 };
