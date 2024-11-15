@@ -7,6 +7,7 @@ import ApiError from "../../../errors/api-error";
 import { JwtHelpers } from "../../../helpers/jwt-helpers";
 import { prisma } from "../../../shard/prisma";
 import { ILoginUser } from "./auth.interface";
+import { sendEMail } from "./send-reset-mail";
 
 const register = async (
   data: User
@@ -176,15 +177,15 @@ const forgotPassword = async (payload: { email: string }) => {
   const resetLink: string =
     config.reset_password_link + `token=${passwordResetToken}`;
 
-  // await sendEMail(
-  //   isUserExist?.email,
-  //   `
-  //     <div>
-  //        <p>Hi, ${isUserExist?.firstName}</p>
-  //        <p>your password reset link: <a href=${resetLink}>Click Here</a></p>
-  //        <p>Thank you</p>
-  //     </div>`
-  // );
+  await sendEMail(
+    isUserExist?.email,
+    `
+      <div>
+         <p>Hi, ${isUserExist?.firstName}</p>
+         <p>your password reset link: <a href=${resetLink}>Click Here</a></p>
+         <p>Thank you</p>
+      </div>`
+  );
 };
 
 export const AuthService = {

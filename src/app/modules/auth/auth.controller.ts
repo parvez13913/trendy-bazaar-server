@@ -56,8 +56,19 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  await AuthService.forgotPassword(req.body);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Check your email!!",
+  });
+});
+
 export const AuthController = {
   register,
   login,
   refreshToken,
+  forgotPassword,
 };
