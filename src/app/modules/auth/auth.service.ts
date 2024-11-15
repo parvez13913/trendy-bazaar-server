@@ -166,6 +166,25 @@ const forgotPassword = async (payload: { email: string }) => {
   if (!isUserExist) {
     throw new ApiError(StatusCodes.NOT_FOUND, "User does not exist");
   }
+
+  const passwordResetToken = JwtHelpers.createPasswordResetToken(
+    { email: isUserExist?.email },
+    config.jwt.secret as string,
+    "5m"
+  );
+
+  const resetLink: string =
+    config.reset_password_link + `token=${passwordResetToken}`;
+
+  // await sendEMail(
+  //   isUserExist?.email,
+  //   `
+  //     <div>
+  //        <p>Hi, ${isUserExist?.firstName}</p>
+  //        <p>your password reset link: <a href=${resetLink}>Click Here</a></p>
+  //        <p>Thank you</p>
+  //     </div>`
+  // );
 };
 
 export const AuthService = {
