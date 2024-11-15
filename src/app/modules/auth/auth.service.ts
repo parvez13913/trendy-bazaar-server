@@ -11,7 +11,7 @@ import { ILoginUser } from "./auth.interface";
 const register = async (
   data: User
 ): Promise<{ accessToken: string; refreshToken: string }> => {
-  const isUserExist = await prisma.user.findFirst({
+  const isUserExist = await prisma.user.findUnique({
     where: {
       email: data?.email,
     },
@@ -156,8 +156,21 @@ const refreshToken = async (token: string) => {
   }
 };
 
+const forgotPassword = async (payload: { email: string }) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email: payload?.email,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "User does not exist");
+  }
+};
+
 export const AuthService = {
   register,
   login,
   refreshToken,
+  forgotPassword,
 };
