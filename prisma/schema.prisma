@@ -67,7 +67,7 @@ model Admin {
   email        String   @unique
   role         UserRole @default(ADMIN)
   contactNo    String
-  address      String
+  address      String?
   profileImage String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
