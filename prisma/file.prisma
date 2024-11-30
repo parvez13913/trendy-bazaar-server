@@ -1,0 +1,32 @@
+enum FileType {
+    IMAGE
+    PDF
+    VIDEO
+}
+
+enum FileStatus {
+    ACTIVE
+    ARCHIVED
+    DELETED
+}
+
+model File {
+    id            Int        @id @default(autoincrement())
+    fileName      String
+    description   String?
+    fileSize      Int
+    filePublicId  String
+    fileUrl       String
+    fileSecureUrl String
+    userId        Int
+    fileType      FileType   @default(IMAGE)
+    status        FileStatus @default(ACTIVE)
+
+    // timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    users User @relation(fields: [userId], references: [id])
+
+    @@map("files")
+}
