@@ -57,23 +57,6 @@ const register = async (
         dateBirth: data.dateBirth,
       },
     });
-  } else if (data.role === UserRole.ADMIN) {
-    await prisma.admin.create({
-      data: {
-        firstName: data.firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        email: data.email,
-        profileImage: data.profileImage,
-        userId: user.id,
-        gender: data.gender,
-        contactNo: data.contactNo,
-        address: data.address,
-        role: data.role,
-        bloodGroup: data.bloodGroup,
-        dateBirth: data.dateBirth,
-      },
-    });
   }
 
   const { email: userEmail, role } = user;
@@ -120,10 +103,39 @@ const login = async (payload: ILoginUser) => {
     config.jwt.refresh_expires_in as string
   );
 
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      userId: isUserExist.id,
+    },
+  });
+
   return {
     accessToken,
     refreshToken,
   };
+};
+
+const logout = async (token: string): Promise<void> => {
+  // Validate if token is provided
+  if (!token) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Token is required");
+  }
+
+  // Delete the refresh token from the database
+  const result = await prisma.refreshToken.deleteMany({
+    where: { token },
+  });
+
+  // If no tokens were deleted, the token is invalid
+  if (result.count === 0) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      "Token not found or already invalidated"
+    );
+  }
+
+  return;
 };
 
 const refreshToken = async (token: string) => {
@@ -191,6 +203,7 @@ const forgotPassword = async (payload: { email: string }) => {
 export const AuthService = {
   register,
   login,
+  logout,
   refreshToken,
   forgotPassword,
 };

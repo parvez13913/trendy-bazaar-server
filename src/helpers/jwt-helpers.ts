@@ -1,5 +1,9 @@
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 
+interface CustomJwtPayload extends JwtPayload {
+  exp: number;
+}
+
 const createToken = (
   payload: Record<string, unknown>,
   secret: Secret,
@@ -9,7 +13,13 @@ const createToken = (
 };
 
 const verifiedToken = (token: string, secret: Secret): JwtPayload => {
-  return jwt.verify(token, secret) as JwtPayload;
+  const decoded = jwt.verify(token, secret) as JwtPayload;
+
+  if (typeof decoded === "string" || !decoded.exp) {
+    throw new Error("Invalid token");
+  }
+
+  return decoded as CustomJwtPayload;
 };
 
 const createPasswordResetToken = (

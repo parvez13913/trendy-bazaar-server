@@ -66,9 +66,20 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const logout = catchAsync(async (req: Request, res: Response) => {
+  await AuthService.logout(req.body);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Log out successfully",
+  });
+});
+
 export const AuthController = {
   register,
   login,
   refreshToken,
   forgotPassword,
+  logout,
 };

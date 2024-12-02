@@ -13,6 +13,8 @@ router.post(
 
 router.post("/login", AuthController.login);
 
+router.post("/logout", AuthController.logout);
+
 router.post("/refresh-token", AuthController.refreshToken);
 
 router.post("/forgot-password", AuthController.forgotPassword);
