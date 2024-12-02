@@ -32,9 +32,20 @@ const createPasswordResetToken = (
     expiresIn: expireTime,
   });
 };
+const joinAdminToken = (
+  payload: Record<string, unknown>,
+  secret: Secret,
+  expireTime: string
+): string => {
+  return jwt.sign(payload, secret, {
+    algorithm: "HS256",
+    expiresIn: expireTime,
+  });
+};
 
 export const JwtHelpers = {
   createToken,
   verifiedToken,
   createPasswordResetToken,
+  joinAdminToken,
 };

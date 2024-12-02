@@ -1,4 +1,5 @@
 import { UserRole } from "@prisma/client";
+import bcrypt from "bcrypt";
 import config from "../config";
 import { prisma } from "../shard/prisma";
 
@@ -21,8 +22,16 @@ export const seedSuperAdmin = async () => {
   });
 
   if (!isSuperAdminExist) {
+    const hashedPassword = await bcrypt.hash(
+      superAdminData.password,
+      Number(config.bcrypt_salt_round)
+    );
+
     await prisma.user.create({
-      data: superAdminData,
+      data: {
+        ...superAdminData,
+        password: hashedPassword,
+      },
     });
   }
 };

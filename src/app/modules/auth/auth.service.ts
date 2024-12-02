@@ -29,34 +29,39 @@ const register = async (
     data?.password,
     Number(config.bcrypt_salt_round)
   );
-  const user = await prisma.user.create({
-    data: {
-      ...data,
-      password: hashedPassword,
-    },
+
+  const user = await prisma.$transaction(async (tx) => {
+    const newUser = await tx.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
+    });
+
+    const profileData = {
+      firstName: data.firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email: data.email,
+      profileImage: data.profileImage,
+      userId: newUser.id,
+      gender: data.gender,
+      contactNo: data.contactNo,
+      address: data.address,
+      role: data.role,
+      bloodGroup: data.bloodGroup,
+      dateBirth: data.dateBirth,
+    };
+
+    if (data?.role === UserRole.CUSTOMER) {
+      await tx.customer.create({ data: profileData });
+    }
+
+    return newUser;
   });
 
   if (!user) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "Failed to register.");
-  }
-
-  if (data.role === UserRole.CUSTOMER) {
-    await prisma.customer.create({
-      data: {
-        firstName: data.firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        email: data.email,
-        profileImage: data.profileImage,
-        userId: user.id,
-        gender: data.gender,
-        contactNo: data.contactNo,
-        address: data.address,
-        role: data.role,
-        bloodGroup: data.bloodGroup,
-        dateBirth: data.dateBirth,
-      },
-    });
   }
 
   const { email: userEmail, role } = user;
@@ -71,6 +76,100 @@ const register = async (
     { userEmail, role },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
+  );
+
+  return { accessToken, refreshToken };
+};
+
+const adminRegister = async (
+  payload: User
+): Promise<{ accessToken: string; refreshToken: string }> => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email: payload?.email,
+    },
+  });
+
+  if (isUserExist) {
+    throw new ApiError(
+      StatusCodes.CONFLICT,
+      "There is already a user by this email."
+    );
+  }
+
+  const hashedPassword = await bcrypt.hash(
+    payload?.password,
+    Number(config.bcrypt_salt_round)
+  );
+
+  const user = await prisma.$transaction(async (tx) => {
+    const newUser = await tx.user.create({
+      data: {
+        ...payload,
+        password: hashedPassword,
+      },
+    });
+
+    const profileData = {
+      firstName: payload.firstName,
+      middleName: payload.middleName,
+      lastName: payload.lastName,
+      email: payload.email,
+      profileImage: payload.profileImage,
+      userId: newUser.id,
+      gender: payload.gender,
+      contactNo: payload.contactNo,
+      address: payload.address,
+      role: payload.role,
+      bloodGroup: payload.bloodGroup,
+      dateBirth: payload.dateBirth,
+    };
+
+    if (payload.role === UserRole.ADMIN) {
+      await tx.admin.create({ data: profileData });
+    }
+
+    return newUser;
+  });
+
+  if (!user) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Failed to register.");
+  }
+
+  const { email: userEmail, role } = user;
+
+  const accessToken = JwtHelpers.createToken(
+    { userEmail, role },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  const refreshToken = JwtHelpers.createToken(
+    { userEmail, role },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string
+  );
+
+  const joinAdminToken = JwtHelpers.joinAdminToken(
+    { email: payload?.email },
+    config.jwt.secret as string,
+    "5m"
+  );
+
+  const resetLink: string =
+    config.reset_password_link + `token=${joinAdminToken}`;
+
+  await sendEMail(
+    payload?.email,
+    `
+      <div>
+         <p>Hi, ${payload?.firstName}</p>
+         <p>Join our platform: <a href=${resetLink}>Click Here</a></p>
+         <p>Thank you</p>
+      </div>
+
+    `,
+    "Login your account"
   );
 
   return { accessToken, refreshToken };
@@ -196,7 +295,10 @@ const forgotPassword = async (payload: { email: string }) => {
          <p>Hi, ${isUserExist?.firstName}</p>
          <p>your password reset link: <a href=${resetLink}>Click Here</a></p>
          <p>Thank you</p>
-      </div>`
+      </div>
+
+    `,
+    "Reset you password"
   );
 };
 
@@ -206,4 +308,5 @@ export const AuthService = {
   logout,
   refreshToken,
   forgotPassword,
+  adminRegister,
 };

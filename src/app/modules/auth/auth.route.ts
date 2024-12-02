@@ -1,4 +1,6 @@
 import express from "express";
+import { ENUM_USER_ROLE } from "../../../enums/user";
+import auth from "../../middlewares/auth";
 import validateRequest from "../../middlewares/validate-request";
 import { AuthController } from "./auth.controller";
 import { AuthValidation } from "./auth.validation";
@@ -9,6 +11,12 @@ router.post(
   "/register",
   validateRequest(AuthValidation.registerZodSchema),
   AuthController.register
+);
+
+router.post(
+  "/admin-register",
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
+  AuthController.adminRegister
 );
 
 router.post("/login", AuthController.login);

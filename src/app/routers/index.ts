@@ -1,6 +1,5 @@
 import express from "express";
 import { AuthRoutes } from "../modules/auth/auth.route";
-import { ImageRoutes } from "../modules/image/image.route";
 import { ProductCategoryRoutes } from "../modules/product-category/product-category.route";
 import { SubProductCategoryRoutes } from "../modules/sub-product-category/sub-product-category.route";
 import { UserRoutes } from "../modules/users/users.route";
@@ -23,10 +22,6 @@ const moduleRoutes = [
   {
     path: "/sub-categories",
     route: SubProductCategoryRoutes,
-  },
-  {
-    path: "/images",
-    route: ImageRoutes,
   },
 ];
 

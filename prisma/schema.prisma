@@ -79,7 +79,7 @@ model Admin {
   dateBirth    String?
   email        String   @unique
   role         UserRole @default(ADMIN)
-  contactNo    String
+  contactNo    String?
   address      String?
   profileImage String?
   createdAt    DateTime @default(now())

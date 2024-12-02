@@ -10,17 +10,48 @@ const register = catchAsync(async (req: Request, res: Response) => {
   const { ...data } = req.body;
   const result = await AuthService.register(data);
 
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "User Created Successfully!",
-    data: result,
+    token: accessToken,
+  });
+});
+
+const adminRegister = catchAsync(async (req: Request, res: Response) => {
+  const { ...data } = req.body;
+
+  const result = await AuthService.adminRegister(data);
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+
+  const { refreshToken, accessToken } = result;
+
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Admin created successfully!",
+    token: accessToken,
   });
 });
 
 const login = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body;
   const result = await AuthService.login(loginData);
+
   const cookieOptions = {
     secure: config.env === "production",
     httpOnly: true,
@@ -78,6 +109,7 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 
 export const AuthController = {
   register,
+  adminRegister,
   login,
   refreshToken,
   forgotPassword,
