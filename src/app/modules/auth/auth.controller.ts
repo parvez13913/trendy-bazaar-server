@@ -50,6 +50,7 @@ const adminRegister = catchAsync(async (req: Request, res: Response) => {
 
 const login = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body;
+
   const result = await AuthService.login(loginData);
 
   const cookieOptions = {
