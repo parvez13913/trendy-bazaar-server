@@ -11,7 +11,7 @@ const registerZodSchema = z.object({
     contactNo: z.string().optional(),
     gender: z.string({ required_error: "Gender is required" }),
     bloodGroup: z.string().optional(),
-    dateBirth: z.string().optional(),
+    dateOfBirth: z.string().optional(),
     address: z.string().optional(),
   }),
 });

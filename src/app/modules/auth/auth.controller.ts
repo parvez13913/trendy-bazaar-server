@@ -28,6 +28,8 @@ const register = catchAsync(async (req: Request, res: Response) => {
 });
 
 const adminRegister = catchAsync(async (req: Request, res: Response) => {
+  console.log(req.body);
+
   const { ...data } = req.body;
 
   const result = await AuthService.adminRegister(data);
