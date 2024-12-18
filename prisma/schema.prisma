@@ -23,7 +23,7 @@ model User {
   bloodGroup   String?
   dateBirth    String?
   email        String   @unique
-  password     String?
+  password     String
   role         UserRole @default(USER)
   contactNo    String
   address      String

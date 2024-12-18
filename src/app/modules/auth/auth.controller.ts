@@ -27,9 +27,17 @@ const register = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const adminRegister = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.body);
+const requestAdminRegister = catchAsync(async (req: Request, res: Response) => {
+  await AuthService.requestAdminRegister(req.body);
 
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Check your email",
+  });
+});
+
+const adminRegister = catchAsync(async (req: Request, res: Response) => {
   const { ...data } = req.body;
 
   const result = await AuthService.adminRegister(data);
@@ -112,6 +120,7 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 
 export const AuthController = {
   register,
+  requestAdminRegister,
   adminRegister,
   login,
   refreshToken,

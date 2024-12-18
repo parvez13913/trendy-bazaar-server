@@ -150,29 +150,45 @@ const adminRegister = async (
     config.jwt.refresh_expires_in as string
   );
 
+  return { accessToken, refreshToken };
+};
+
+const requestAdminRegister = async (
+  payload: Record<string, unknown>
+): Promise<void> => {
+  const email = payload.email as string;
+  const isUserExist = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (isUserExist) {
+    throw new ApiError(
+      StatusCodes.CONFLICT,
+      "There is already a user by this email."
+    );
+  }
+
   const joinAdminToken = JwtHelpers.joinAdminToken(
-    { email: payload?.email },
-    config.jwt.secret as string,
+    { email },
+    config.jwt.secret as Secret,
     "5m"
   );
 
-  const resetLink: string =
-    config.reset_password_link + `token=${joinAdminToken}`;
+  const AdminRequestLink: string =
+    config.reset_password_link + `create-admin=${joinAdminToken}`;
 
   await sendEMail(
-    payload?.email,
+    email,
     `
       <div>
-         <p>Hi, ${payload?.firstName}</p>
-         <p>Join our platform: <a href=${resetLink}>Click Here</a></p>
+         <p>Hi</p>
+         <p>Join our platform: <a href=${AdminRequestLink}>Click Here</a></p>
          <p>Thank you</p>
       </div>
 
     `,
-    "Login your account"
+    "Create your account"
   );
-
-  return { accessToken, refreshToken };
 };
 
 const login = async (payload: ILoginUser) => {
@@ -308,5 +324,6 @@ export const AuthService = {
   logout,
   refreshToken,
   forgotPassword,
+  requestAdminRegister,
   adminRegister,
 };

@@ -14,6 +14,12 @@ router.post(
 );
 
 router.post(
+  "/request-admin-register",
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
+  AuthController.requestAdminRegister
+);
+
+router.post(
   "/admin-register",
   auth(ENUM_USER_ROLE.SUPER_ADMIN),
   AuthController.adminRegister
