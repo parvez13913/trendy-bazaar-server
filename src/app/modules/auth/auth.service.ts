@@ -155,7 +155,7 @@ const adminRegister = async (
 
 const requestAdminRegister = async (
   payload: Record<string, unknown>
-): Promise<void> => {
+): Promise<string> => {
   const email = payload.email as string;
   const isUserExist = await prisma.user.findUnique({
     where: { email },
@@ -189,6 +189,7 @@ const requestAdminRegister = async (
     `,
     "Create your account"
   );
+  return "Admin created";
 };
 
 const login = async (payload: ILoginUser) => {

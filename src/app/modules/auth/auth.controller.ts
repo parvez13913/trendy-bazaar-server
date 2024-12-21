@@ -28,12 +28,13 @@ const register = catchAsync(async (req: Request, res: Response) => {
 });
 
 const requestAdminRegister = catchAsync(async (req: Request, res: Response) => {
-  await AuthService.requestAdminRegister(req.body);
+  const result = await AuthService.requestAdminRegister(req.body);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Check your email",
+    data: result,
   });
 });
 
