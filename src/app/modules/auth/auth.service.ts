@@ -157,6 +157,7 @@ const requestAdminRegister = async (
   payload: Record<string, unknown>
 ): Promise<string> => {
   const email = payload.email as string;
+
   const isUserExist = await prisma.user.findUnique({
     where: { email },
   });
@@ -194,6 +195,7 @@ const requestAdminRegister = async (
 
 const login = async (payload: ILoginUser) => {
   const { email, password } = payload;
+
   const isUserExist = await prisma.user.findFirst({ where: { email } });
 
   if (!isUserExist) {
@@ -207,6 +209,7 @@ const login = async (payload: ILoginUser) => {
   }
 
   const { email: userEmail, role } = isUserExist;
+
   const accessToken = JwtHelpers.createToken(
     { userEmail, role },
     config.jwt.secret as Secret,
