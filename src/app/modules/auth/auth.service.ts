@@ -176,7 +176,7 @@ const requestAdminRegister = async (
   );
 
   const AdminRequestLink: string =
-    config.reset_password_link + `create-admin=${joinAdminToken}`;
+    config.send_admin_email + `create-admin=${joinAdminToken}`;
 
   await sendEMail(
     email,

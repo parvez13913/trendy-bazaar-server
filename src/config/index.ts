@@ -11,6 +11,7 @@ export default {
   reset_password_link: process.env.RESET_PASSWORD_LINK,
   email: process.env.EMAIL,
   app_password: process.env.APP_PASSWORD,
+  send_admin_email: process.env.SEND_ADMIN_EMAIL,
   jwt: {
     secret: process.env.JWT_SECRET,
     refresh_secret: process.env.JWT_REFRESH_SECRET,
