@@ -19,11 +19,7 @@ router.post(
   AuthController.requestAdminRegister
 );
 
-router.post(
-  "/admin-register",
-  auth(ENUM_USER_ROLE.SUPER_ADMIN),
-  AuthController.adminRegister
-);
+router.post("/admin-register", AuthController.adminRegister);
 
 router.post("/login", AuthController.login);
 
