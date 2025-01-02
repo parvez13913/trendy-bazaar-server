@@ -226,6 +226,7 @@ const login = async (payload: ILoginUser) => {
     data: {
       token: refreshToken,
       userId: isUserExist.id,
+      email: isUserExist.email,
     },
   });
 
@@ -235,24 +236,10 @@ const login = async (payload: ILoginUser) => {
   };
 };
 
-const logout = async (token: string): Promise<void> => {
-  // Validate if token is provided
-  if (!token) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, "Token is required");
-  }
-
-  // Delete the refresh token from the database
-  const result = await prisma.refreshToken.deleteMany({
-    where: { token },
+const logout = async (payload: any): Promise<void> => {
+  await prisma.refreshToken.deleteMany({
+    where: { email: payload.email },
   });
-
-  // If no tokens were deleted, the token is invalid
-  if (result.count === 0) {
-    throw new ApiError(
-      StatusCodes.NOT_FOUND,
-      "Token not found or already invalidated"
-    );
-  }
 
   return;
 };

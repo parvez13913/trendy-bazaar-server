@@ -31,9 +31,8 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  customers     Customer?
-  admins        Admin?
-  refreshTokens RefreshToken[]
+  customers Customer?
+  admins    Admin?
 
   @@map("users")
 }
@@ -42,7 +41,7 @@ model RefreshToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email     String
   createdAt DateTime @default(now())
 
   @@map("refreshTokens")
