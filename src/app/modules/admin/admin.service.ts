@@ -9,7 +9,7 @@ import { IAdminFilters } from "./admin.interface";
 const getAllAdmins = async (
   filters: IAdminFilters,
   options: IPaginationOptions
-): Promise<IGenericResponse<Admin[]>> => {
+): Promise<IGenericResponse<Omit<Admin, "password">[]>> => {
   const { limit, skip, page } = paginationHelpers.calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
 
@@ -47,6 +47,23 @@ const getAllAdmins = async (
       options.sortBy && options.sortOrder
         ? { [options.sortBy]: options.sortOrder }
         : { createdAt: "desc" },
+    select: {
+      id: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      gender: true,
+      bloodGroup: true,
+      dateOfBirth: true,
+      email: true,
+      role: true,
+      contactNo: true,
+      address: true,
+      userId: true,
+      profileImage: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   const total = await prisma.admin.count({
