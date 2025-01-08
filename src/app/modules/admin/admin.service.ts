@@ -1,4 +1,6 @@
 import { Admin, Prisma } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
+import ApiError from "../../../errors/api-error";
 import { paginationHelpers } from "../../../helpers/pagination-helpers";
 import { IGenericResponse } from "../../../interface/common";
 import { IPaginationOptions } from "../../../interface/pagination";
@@ -80,6 +82,19 @@ const getAllAdmins = async (
   };
 };
 
+const getSingleAdmin = async (email: string) => {
+  const result = await prisma.admin.findUnique({
+    where: { email },
+  });
+
+  if (!result) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
+  return result;
+};
+
 export const AdminService = {
   getAllAdmins,
+  getSingleAdmin,
 };
