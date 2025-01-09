@@ -22,6 +22,18 @@ const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.params;
+  const result = await AdminService.getSingleAdmin(email);
+  sendResponse<Admin>(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Admin fetched successfully!!",
+    data: result,
+  });
+});
+
 export const AdminController = {
   getAllAdmins,
+  getSingleAdmin,
 };
