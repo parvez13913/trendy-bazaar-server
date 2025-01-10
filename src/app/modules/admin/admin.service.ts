@@ -94,7 +94,25 @@ const getSingleAdmin = async (email: string) => {
   return result;
 };
 
+const updateAdmin = async (
+  email: string,
+  payload: Partial<Admin>
+): Promise<Admin | null> => {
+  const isAdminExist = await prisma.admin.findUnique({ where: { email } });
+  if (!isAdminExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Admin not found");
+  }
+
+  const result = await prisma.admin.update({
+    where: { email },
+    data: payload,
+  });
+
+  return result;
+};
+
 export const AdminService = {
   getAllAdmins,
   getSingleAdmin,
+  updateAdmin,
 };

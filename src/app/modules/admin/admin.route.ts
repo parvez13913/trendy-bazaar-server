@@ -11,6 +11,12 @@ router.get(
   AdminController.getSingleAdmin
 );
 
+router.patch(
+  "/:email",
+  auth(ENUM_USER_ROLE.ADMIN),
+  AdminController.updateAdmin
+);
+
 router.get("/", auth(ENUM_USER_ROLE.SUPER_ADMIN), AdminController.getAllAdmins);
 
 export const AdminRoutes = router;
