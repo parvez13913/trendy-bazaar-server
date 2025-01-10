@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get(
   "/:email",
-
+  auth(ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.getSingleAdmin
 );
 
