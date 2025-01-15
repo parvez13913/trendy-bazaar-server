@@ -275,7 +275,7 @@ const refreshToken = async (token: string) => {
   }
 };
 
-const forgotPassword = async (payload: { email: string }) => {
+const forgotPassword = async (payload: Record<string, any>) => {
   const isUserExist = await prisma.user.findUnique({
     where: {
       email: payload?.email,
