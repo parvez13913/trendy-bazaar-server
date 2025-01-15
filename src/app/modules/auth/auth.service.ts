@@ -293,13 +293,15 @@ const forgotPassword = async (payload: Record<string, any>) => {
   );
 
   const resetLink: string =
-    config.reset_password_link + `token=${passwordResetToken}`;
+    config.reset_password_link + `reset-password=${passwordResetToken}`;
+
+  const username = isUserExist?.email.split("@")[0];
 
   await sendEMail(
     isUserExist?.email,
     `
       <div>
-         <p>Hi, ${isUserExist?.firstName}</p>
+         <p>Hi, ${username}</p>
          <p>your password reset link: <a href=${resetLink}>Click Here</a></p>
          <p>Thank you</p>
       </div>
@@ -309,12 +311,50 @@ const forgotPassword = async (payload: Record<string, any>) => {
   );
 };
 
+const resetPassword = async (payload: Record<string, any>, token: string) => {
+  const { email, newPassword } = payload;
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "User does not exist");
+  }
+
+  const isVerified = await JwtHelpers.verifiedToken(
+    token,
+    config.jwt.secret as string
+  );
+
+  if (!isVerified) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
+  }
+  const password = await bcrypt.hash(
+    newPassword,
+    Number(config.bcrypt_salt_round)
+  );
+
+  await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: {
+      password,
+    },
+  });
+
+  return { message: "Password updated successfully" };
+};
+
 export const AuthService = {
   register,
   login,
   logout,
   refreshToken,
   forgotPassword,
+  resetPassword,
   requestAdminRegister,
   adminRegister,
 };
