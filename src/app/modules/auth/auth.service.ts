@@ -293,7 +293,7 @@ const forgotPassword = async (payload: Record<string, any>) => {
   );
 
   const resetLink: string =
-    config.reset_password_link + `reset-password=${passwordResetToken}`;
+    config.reset_password_link + `reset-password?${passwordResetToken}`;
 
   const username = isUserExist?.email.split("@")[0];
 
@@ -311,11 +311,10 @@ const forgotPassword = async (payload: Record<string, any>) => {
   );
 };
 
-const resetPassword = async (payload: Record<string, any>, token: string) => {
-  const { email, newPassword } = payload;
+const resetPassword = async (payload: Record<string, any>) => {
   const isUserExist = await prisma.user.findUnique({
     where: {
-      email: email,
+      email: payload?.email,
     },
   });
 
@@ -323,22 +322,14 @@ const resetPassword = async (payload: Record<string, any>, token: string) => {
     throw new ApiError(StatusCodes.NOT_FOUND, "User does not exist");
   }
 
-  const isVerified = await JwtHelpers.verifiedToken(
-    token,
-    config.jwt.secret as string
-  );
-
-  if (!isVerified) {
-    throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized");
-  }
   const password = await bcrypt.hash(
-    newPassword,
+    payload?.newPassword,
     Number(config.bcrypt_salt_round)
   );
 
   await prisma.user.update({
     where: {
-      email: email,
+      email: payload?.email,
     },
     data: {
       password,
