@@ -2,6 +2,7 @@ import express from "express";
 import { AdminRoutes } from "../modules/admin/admin.route";
 import { AuthRoutes } from "../modules/auth/auth.route";
 import { ProductCategoryRoutes } from "../modules/product-category/product-category.route";
+import { ProfileRoutes } from "../modules/profile/profile.route";
 import { SubProductCategoryRoutes } from "../modules/sub-product-category/sub-product-category.route";
 import { UserRoutes } from "../modules/users/users.route";
 
@@ -19,6 +20,10 @@ const moduleRoutes = [
   {
     path: "/auth",
     route: AuthRoutes,
+  },
+  {
+    path: "/profile",
+    route: ProfileRoutes,
   },
   {
     path: "/categories",
