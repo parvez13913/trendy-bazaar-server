@@ -29,6 +29,11 @@ const createProductCategory = async (
   return result;
 };
 
+const getAllProductCategories = async () => {
+  const result = await prisma.productCategory.findMany();
+  return result;
+};
+
 const getSingleProductCategory = async (
   id: number
 ): Promise<ProductCategory> => {
@@ -89,6 +94,7 @@ const deleteProductCategory = async (id: number) => {
 
 export const ProductCategoryService = {
   createProductCategory,
+  getAllProductCategories,
   getSingleProductCategory,
   updateProductCategory,
   deleteProductCategory,

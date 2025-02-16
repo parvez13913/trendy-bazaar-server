@@ -32,6 +32,19 @@ const getSingleProductCategory = catchAsync(
   }
 );
 
+const getAllProductCategories = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await ProductCategoryService.getAllProductCategories();
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Product category fetched successfully!!",
+      data: result,
+    });
+  }
+);
+
 const updateProductCategory = catchAsync(
   async (req: Request, res: Response) => {
     const result = await ProductCategoryService.updateProductCategory(
@@ -65,6 +78,7 @@ const deleteProductCategory = catchAsync(
 
 export const ProductCategoryController = {
   createProductCategory,
+  getAllProductCategories,
   getSingleProductCategory,
   updateProductCategory,
   deleteProductCategory,

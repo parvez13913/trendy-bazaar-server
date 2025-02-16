@@ -5,6 +5,8 @@ import { ProductCategoryController } from "./product-category.controller";
 
 const router = express.Router();
 
+router.get("/", ProductCategoryController.getAllProductCategories);
+
 router.get("/:id", ProductCategoryController.getSingleProductCategory);
 
 router.post(
