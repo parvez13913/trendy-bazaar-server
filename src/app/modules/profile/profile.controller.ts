@@ -19,7 +19,6 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization;
   const result = await ProfileService.updateProfile(token!, req);
-  console.log(req.file);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
