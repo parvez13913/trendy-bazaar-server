@@ -32,7 +32,28 @@ const getSingleProduct = async (id: number): Promise<Product> => {
   return result;
 };
 
+const deleteProduct = async (id: number) => {
+  const isProductExist = await prisma.product.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!isProductExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Product not found");
+  }
+
+  const result = await prisma.product.delete({
+    where: {
+      id,
+    },
+  });
+
+  return result;
+};
+
 export const ProductService = {
   createProduct,
   getSingleProduct,
+  deleteProduct,
 };
