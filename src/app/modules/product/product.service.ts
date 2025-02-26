@@ -32,6 +32,32 @@ const getSingleProduct = async (id: number): Promise<Product> => {
   return result;
 };
 
+const updateProduct = async (
+  id: number,
+  payload: Partial<Product>
+): Promise<Product> => {
+  const isProductExist = await prisma.product.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!isProductExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Product not found");
+  }
+
+  const result = await prisma.product.update({
+    where: {
+      id,
+    },
+    data: {
+      ...payload,
+    },
+  });
+
+  return result;
+};
+
 const deleteProduct = async (id: number) => {
   const isProductExist = await prisma.product.findFirst({
     where: {
@@ -55,5 +81,6 @@ const deleteProduct = async (id: number) => {
 export const ProductService = {
   createProduct,
   getSingleProduct,
+  updateProduct,
   deleteProduct,
 };
